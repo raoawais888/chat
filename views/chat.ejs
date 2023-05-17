@@ -279,6 +279,10 @@
 
                  $("#chat_form").on("submit",function(e){
 
+
+                    
+
+
                     e.preventDefault();
                     let message = $("#message_input").val();
                     $.ajax({
@@ -287,8 +291,20 @@
                         method:"post",
                         data:{message:message, reciever_id:reciever_id , sender_id:sender_id},
                         success:function(data){
-                            
                             console.log(data);
+                         if(data == "success"){
+                          
+
+                               let html = `<li class="repaly">
+                                                        <p>${message}</p>
+                                                        <span class="time">10:20 am</span>
+                                                    </li>`;  
+
+                              $(".msg-body ul").append(html);   
+                              
+                              
+                              socket.emit("msg",{message:message});
+                         }
 
                         }
 

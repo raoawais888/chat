@@ -60,30 +60,31 @@ class HomeController {
 
 
 
-  //  static chat_store = async (req,res)=>{
-  //   try {
+   static chat_store = async (req,res)=>{
+    try {
 
            
-  //     const {message , reciever_id, sender_id} = req.body;
+      const {message , reciever_id, sender_id} = req.body;
 
-  //       const chatDoc = ChatModel({
+        const chatDoc = ChatModel({
                  
-  //         message:message,
-  //         reciever_id:reciever_id,
-  //         sender_id:sender_id
-  //       })
+          message:message,
+          reciever_id:reciever_id,
+          sender_id:sender_id
+        })
   
-  //         await chatDoc.save();
+          await chatDoc.save();
 
-  //         res.status(200).send("success");
+          res.status(200).send("success");
+          
        
 
 
 
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  //  }
+    } catch (error) {
+      console.log(error);
+    }
+   }
 
 
 }

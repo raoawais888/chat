@@ -88,6 +88,11 @@ const UserModel = require("./model/User.js");
       socket.broadcast.emit("user_online",{sender_id});
 
 
+
+      socket.on("msg", (data)=>{
+
+        console.log(data);
+      })
       
 
       
