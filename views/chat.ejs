@@ -54,18 +54,18 @@
 
                                                     
 
-                                                            <% user.forEach((item)=>{ %>
+                                                            <% user_data.forEach((item)=>{ %>
 
 
-                                                            <a href="#" class="d-flex align-items-center">
+                            <a href="/" class="d-flex align-items-center user_id" data-id="<%= item._id %>">
                                                                 <div class="flex-shrink-0">
                                                                     <img class="img-fluid" src="/uploads/<%= item.image %>" alt="user img" style="height: 60px;width: 60px;border-radius: 50%;">
 
                                                                     
                                                                     <% if(item.status == 1){%>
-                                                                    <span class="active"></span>
+                                                        <span class="active" id="<%= item._id%>-status"></span>
                                                                     <% }else{ %>
-                                                                        <span class="off"></span>
+                                                                        <span class="off" id="<%= item._id%>-status"></span>
                                                                         <% } %>
                                                                 </div>
                                                                 <div class="flex-grow-1 ms-3">
@@ -99,19 +99,19 @@
     
     
                             <!-- chatbox -->
-                            <div class="chatbox">
+                            <div class="chatbox d-none">
                                 <div class="modal-dialog-scrollable">
                                     <div class="modal-content">
                                         <div class="msg-head">
                                             <div class="row">
                                                 <div class="col-8">
                                                     <div class="d-flex align-items-center">
-                                                        <span class="chat-icon"><img class="img-fluid" src="https://mehedihtml.com/chatbox/assets/img/arroleftt.svg" alt="image title"></span>
+                                                        <span class="chat-icon"><img class="img-fluid chat_img" src="" alt="image title"></span>
                                                         <div class="flex-shrink-0">
-                                                            <img class="img-fluid" src="https://mehedihtml.com/chatbox/assets/img/user.png" alt="user img">
+                                                            <img class="img-fluid chat_img" src="" alt="user img" style="height: 60px; width: 60px; border-radius: 50%;">
                                                         </div>
                                                         <div class="flex-grow-1 ms-3">
-                                                            <h3>Chat Start</h3>
+                                                            <h3 class="chat_name"></h3>
                                                             
                                                         </div>
                                                     </div>
@@ -179,10 +179,10 @@
     
     
                                         <div class="send-box">
-                                            <form action="">
-                                                <input type="text" class="form-control" aria-label="message…" placeholder="Write message…">
+                                            <form action="" id="chat_form">
+                                                <input type="text" class="form-control" aria-label="message…" id="message_input" name="message"  placeholder="Write message…" required>
     
-                                                <button type="button"><i class="fa fa-paper-plane" aria-hidden="true"></i> Send</button>
+                                                <button type="submit"><i class="fa fa-paper-plane" aria-hidden="true"></i> Send</button>
                                             </form>
     
                                             <div class="send-btns">
@@ -228,28 +228,82 @@
 
     
     <script>
-           var io = io("/userchat");
+        var sender_id = '<%= user._id %>';
+                   
+                
+           var socket = io("/userchat" , {
 
-           io.on("event",(data)=>{
-            console.log(data);
-           })
-                  
+               auth:{
+                token: sender_id
+               }
+
+           } );
+
+           socket.on("user_online", (data)=>{
+
+             $("#"+data.sender_id+"-status").removeClass("off");  
+             $("#"+data.sender_id+"-status").addClass("active");  
+           })  
+
+
+           socket.on("user_offline", (data)=>{
+             $("#"+data.sender_id+"-status").removeClass("active");  
+             $("#"+data.sender_id+"-status").addClass("off");  
+           })  
+
+
+         
+             
            
-        jQuery(document).ready(function() {
+        $(document).ready(function() {
+
+                 var reciever_id  ;
+            $(document).on("click",".user_id",function(e){
+ 
+                $(".chatbox").removeClass("d-none");
+
+                const name = $(this).find("h3").text();
+                 const img_src = $(this).find("img").attr("src");
+                 $(".chat_name").text(name);
+                 $(".chat_img").attr("src",img_src); 
+                e.preventDefault();
+                  reciever_id = $(this).attr("data-id")
+              
+            })
 
 
-        
 
 
 
-$(".chat-list a").click(function() { 
-    $(".chatbox").addClass('showbox');
-    return false;
-});
+            //   form message chat by ajax 
 
-$(".chat-icon").click(function() {
-    $(".chatbox").removeClass('showbox');
-});
+                 $("#chat_form").on("submit",function(e){
+
+                    e.preventDefault();
+                    let message = $("#message_input").val();
+                    $.ajax({
+                     
+                        url:"/chat",
+                        method:"post",
+                        data:{message:message, reciever_id:reciever_id , sender_id:sender_id},
+                        success:function(data){
+                            
+                            console.log(data);
+
+                        }
+
+
+
+                    })
+
+                    
+
+                 })
+           
+
+       
+
+
 
 
 });

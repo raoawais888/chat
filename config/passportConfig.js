@@ -12,10 +12,11 @@ const bcrypt = require ("bcrypt");
             passport.use(new LocalStrategy({usernameField:"email" , passwordField:"password"},
                 async(email, password, done) =>{
 
+                 
                   // Find the user with the given username
                  const user =  await UserModel.findOne({ email: email });
                   
-                
+                        //  console.log(user);
                     if (!user) {
                       return done(null, false, { message: 'Incorrect username.' });
                     }

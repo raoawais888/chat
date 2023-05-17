@@ -10,6 +10,7 @@ const userCheck = require("../middleware/auth.js");
 
 router.get("/",HomeController.index);
 router.get("/chat",userCheck, HomeController.chatShow);
+router.post("/chat",userCheck, HomeController.chat_store);
 
 
 router.post('/',passport.authenticate('local', 

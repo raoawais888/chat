@@ -39,7 +39,8 @@ localPassport(passport);
 app.use(flash());
 
  app.use((req,res , next)=>{
-     res.locals.message = req.flash()
+     res.locals.message = req.flash();
+     res.locals.user = req.user;
      next();
  })
 
@@ -78,14 +79,22 @@ const UserModel = require("./model/User.js");
 
   const ups = io.of("/userchat");
 
-  ups.on("connection", (socket)=>{
+  ups.on("connection", async (socket)=>{
 
-                
-    socket.to(socket.id).emit("event", {name:"hello sada"});
+         
+     var  sender_id =   socket.handshake.auth.token;
 
+      await UserModel.findByIdAndUpdate({_id:sender_id} , {status:1})
+      socket.broadcast.emit("user_online",{sender_id});
+
+
+      
+
+      
      
-    socket.on("disconnect", ()=>{
-
+    socket.on("disconnect", async ()=>{
+      await UserModel.findByIdAndUpdate({_id:sender_id} , {status:0})
+      socket.broadcast.emit("user_offline",{sender_id});
      
     })
  

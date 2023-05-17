@@ -1,4 +1,5 @@
 const UserModel = require("../model/User.js");
+const ChatModel = require("../model/Chat.js");
 
 class HomeController {
 
@@ -31,8 +32,8 @@ class HomeController {
   static chatShow = async (req,res)=>{
     try {
      
-      const user = await UserModel.find({_id:{$nin : [req.user._id] }}); 
-       res.render("chat",{user});
+      const user_data = await UserModel.find({_id:{$nin : [req.user._id] }}); 
+       res.render("chat",{user_data});
 
     } catch (error) {
       
@@ -56,6 +57,34 @@ class HomeController {
       console.log(error);
     }
    }
+
+
+
+  //  static chat_store = async (req,res)=>{
+  //   try {
+
+           
+  //     const {message , reciever_id, sender_id} = req.body;
+
+  //       const chatDoc = ChatModel({
+                 
+  //         message:message,
+  //         reciever_id:reciever_id,
+  //         sender_id:sender_id
+  //       })
+  
+  //         await chatDoc.save();
+
+  //         res.status(200).send("success");
+       
+
+
+
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  //  }
+
 
 }
 
